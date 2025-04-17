@@ -1,74 +1,46 @@
 #include "servoControl.h"
-
 #include <ESP32Servo.h>
 
-// Servo objects and variables
-Servo horizontal; 
-Servo vertical;
+// Servo objects
+Servo horizontal, vertical;
 
 // Servo limits
-const int servohoriLimitHigh = 175;
-const int servohoriLimitLow = 5;
-const int servovertLimitHigh = 140;
-const int servovertLimitLow = 1;
+const int servohoriLimitHigh = 175, servohoriLimitLow = 5;
+const int servovertLimitHigh = 140, servovertLimitLow = 1;
 
 // LDR pins
-const int ldrlt = 35; // Top Left
-const int ldrrt = 32; // Top Right
-const int ldrld = 34; // Bottom Left
-const int ldrrd = 33; // Bottom Right
+const int ldrlt = 35, ldrrt = 32, ldrld = 34, ldrrd = 33;
 
-// Global tracking variables
-int servohori = 180; // Current horizontal position
-int servovert = 45;  // Current vertical position
+// Current servo positions
+int servohori = 180, servovert = 45;
 
 void setupServos() {
   horizontal.attach(26);
   vertical.attach(25);
   horizontal.write(0);
   vertical.write(0);
-  //delay(2500); // Initialization delay
 }
 
-void trackLight() {
-  // Read all LDR sensors
-  int lt = analogRead(ldrlt);
-  int rt = analogRead(ldrrt);
-  int ld = analogRead(ldrld);
-  int rd = analogRead(ldrrd);
+void LightTrackingAndServoControl() {
+  int lt = analogRead(ldrlt), rt = analogRead(ldrrt);
+  int ld = analogRead(ldrld), rd = analogRead(ldrrd);
 
-  const int tol = 200; // Light difference threshold
-  const int dtime = 10; // Loop delay
+  int avt = (lt + rt) >> 1, avd = (ld + rd) >> 1; // average top/bottom
+  int avl = (lt + ld) >> 1, avr = (rt + rd) >> 1; // average left/right
 
-  // Calculate averages
-  int avt = (lt + rt) / 2; // Top average
-  int avd = (ld + rd) / 2; // Bottom average
-  int avl = (lt + ld) / 2; // Left average
-  int avr = (rt + rd) / 2; // Right average
+  int dvert = avt - avd, dhoriz = avl - avr;
 
-  // Calculate differences
-  int dvert = avt - avd;
-  int dhoriz = avl - avr;
+  const int tol = 200;
 
-  // Vertical tracking
   if (abs(dvert) > tol) {
-    if (avt > avd) {
-      servovert = min(servovert + 1, servovertLimitHigh);
-    } else {
-      servovert = max(servovert - 1, servovertLimitLow);
-    }
+    servovert = constrain(servovert + (dvert > 0 ? 1 : -1), servovertLimitLow, servovertLimitHigh);
     vertical.write(servovert);
   }
 
-  // Horizontal tracking
   if (abs(dhoriz) > tol) {
-    if (avl > avr) {
-      servohori = max(servohori - 1, servohoriLimitLow);
-    } else {
-      servohori = min(servohori + 1, servohoriLimitHigh);
-    }
+    servohori = constrain(servohori + (dhoriz < 0 ? 1 : -1), servohoriLimitLow, servohoriLimitHigh);
     horizontal.write(servohori);
   }
 
-  delay(dtime);
+  delay(10);
 }
