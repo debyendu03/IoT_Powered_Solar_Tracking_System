@@ -1,9 +1,13 @@
-void setup() {
-  // put your setup code here, to run once:
+#include "INA226Sensor.h"
 
+void setup() {
+  Serial.begin(115200);
+   
+  initINA226();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+INA226Data SensorData = getINA226Value();
+delay(1500);
 
 }
