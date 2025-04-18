@@ -4,16 +4,16 @@
 #include <BlynkSimpleEsp32.h>  
 #include "sendToBlynk.h" 
 
-void initBlynk(const char* auth,const char* ssid,const char* pass){
-   Blynk.begin(auth, ssid, pass);   // Blynk is already defined in the .ino file
+void initBlynk(const char* auth, const char* ssid, const char* pass) {
+  Blynk.begin(auth, ssid, pass);
 }
 
 void sendToBlynk() {
-  INA226Data SensorData = getINA226Value();
-  Blynk.virtualWrite(V0, SensorData.shuntVoltage_mV);
-  Blynk.virtualWrite(V1, SensorData.busVoltage_V);
-  Blynk.virtualWrite(V2, SensorData.loadVoltage_V);
-  Blynk.virtualWrite(V3, SensorData.current_mA);
-  Blynk.virtualWrite(V4, SensorData.power_mW);
+  INA226Data sensorData = getINA226Value();
+  Blynk.virtualWrite(V0, sensorData.shuntVoltage_mV);
+  Blynk.virtualWrite(V1, sensorData.busVoltage_V);
+  Blynk.virtualWrite(V2, sensorData.loadVoltage_V);
+  Blynk.virtualWrite(V3, sensorData.current_mA);
+  Blynk.virtualWrite(V4, sensorData.power_mW);
   Blynk.run();
 }

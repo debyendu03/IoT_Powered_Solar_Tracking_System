@@ -3,7 +3,7 @@
 
 #include "INA226Sensor.h"
 
-void initBlynk(const char* auth,const char* ssid,const char* pass);
-void sendToBlynk();
+ void initBlynk(const char* auth, const char* ssid, const char* pass);
+ void sendToBlynk();
 
 #endif
