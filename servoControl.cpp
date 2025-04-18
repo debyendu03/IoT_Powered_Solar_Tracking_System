@@ -17,8 +17,8 @@ int servohori = 180, servovert = 45;
 void setupServos() {
   horizontal.attach(26);
   vertical.attach(25);
-  horizontal.write(0);
-  vertical.write(0);
+  horizontal.write(servohori);
+  vertical.write(servovert);
 }
 
 void LightTrackingAndServoControl() {
