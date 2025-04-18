@@ -1,4 +1,3 @@
-#include <WiFi.h>
 #include "servoControl.h"
 #include "sendToBlynk.h"
 
@@ -7,11 +6,9 @@ const char* pass="password";
 const char* blynkAuth="_gDiltngBrVsI1t4cG8cduavXtdPwkWu";
 
 void setup() {
-  Serial.begin(115200);
   setupServos();
   initINA226();
-  WiFi.begin(ssid,pass);
-  initBlynk(blynkAuth,ssid,pass);
+  initWiFiAndBlynk(blynkAuth,ssid,pass);
 }
 
 void loop() {

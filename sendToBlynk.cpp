@@ -2,9 +2,11 @@
 #define BLYNK_TEMPLATE_NAME "IoT Enable Solar Tracking System"
 #define BLYNK_AUTH_TOKEN "_gDiltngBrVsI1t4cG8cduavXtdPwkWu"
 #include <BlynkSimpleEsp32.h>  
+#include <WiFi.h>
 #include "sendToBlynk.h" 
 
-void initBlynk(const char* auth, const char* ssid, const char* pass) {
+void initWiFiAndBlynk(const char* auth, const char* ssid, const char* pass) {
+  WiFi.begin(ssid,pass);
   Blynk.begin(auth, ssid, pass);
 }
 
