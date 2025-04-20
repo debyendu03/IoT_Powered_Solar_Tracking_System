@@ -3,7 +3,7 @@
 
 const char* ssid="realme 6i";
 const char* pass="password";
-const char* blynkAuth="_gDiltngBrVsI1t4cG8cduavXtdPwkWu";
+const char* blynkAuth="UYV1OePmeVDxN0oYqXjUAJMCcVhza4iz";
 
 void setup() {
   setupServos();
