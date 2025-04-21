@@ -1,5 +1,6 @@
 #include "servoControl.h"
 #include "sendToBlynk.h"
+#include "taskManager.h"
 
 const char* ssid="realme 6i";
 const char* pass="password";
@@ -9,9 +10,9 @@ void setup() {
   setupServos();
   initINA226();
   initWiFiAndBlynk(blynkAuth,ssid,pass);
+  createTasks();
 }
 
 void loop() {
-LightTrackingAndServoControl();
-sendToBlynk();
+ 
 }
