@@ -12,7 +12,7 @@ extern TaskHandle_t TaskSendToBlynk;
 void LightAndServoTask(void* parameter);
 void SendToBlynkTask(void* parameter);
 
-// Declare the function to create tasks
+// Function to create tasks
 void createTasks();
 
 #endif
