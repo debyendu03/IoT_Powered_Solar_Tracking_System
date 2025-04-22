@@ -12,8 +12,17 @@ const int servovertLimitHigh = 140, servovertLimitLow = 1;
 const int ldrlt = 35, ldrrt = 32, ldrld = 34, ldrrd = 33;
 
 // Current servo positions
-int servohori = 180, servovert = 45;
+int servohori = 0;  // initial servo horizontal position 0
+int servovert = 180;  // initial servo vertical position 180
 
+// Timing control
+unsigned long lastMoveTime = 0;
+const unsigned long moveInterval = 50; // Move every 50ms for smoothness
+
+// Define the light threshold to decide if it's outdoor or indoor
+const int lightThreshold = 1000; // Adjust based on environment
+
+// Setup servos
 void setupServos() {
   horizontal.attach(26);
   vertical.attach(25);
@@ -21,26 +30,54 @@ void setupServos() {
   vertical.write(servovert);
 }
 
+// Function to read LDR and calculate average
+int readLDR(int pin) {
+  int sum = 0;
+  for (int i = 0; i < 5; i++) {
+    sum += analogRead(pin);
+    delayMicroseconds(500); // Very tiny delay between reads (~0.5ms)
+  }
+  return sum / 5;
+}
+
+// Light Tracking and Servo Control
 void LightTrackingAndServoControl() {
-  int lt = analogRead(ldrlt), rt = analogRead(ldrrt);
-  int ld = analogRead(ldrld), rd = analogRead(ldrrd);
+  unsigned long currentMillis = millis();
+  
+  // Only update at defined interval
+  if (currentMillis - lastMoveTime >= moveInterval) {
+    lastMoveTime = currentMillis;
+    
+    // Read the LDR values
+    int lt = readLDR(ldrlt);
+    int rt = readLDR(ldrrt);
+    int ld = readLDR(ldrld);
+    int rd = readLDR(ldrrd);
 
-  int avt = (lt + rt) >> 1, avd = (ld + rd) >> 1; // average top/bottom
-  int avl = (lt + ld) >> 1, avr = (rt + rd) >> 1; // average left/right
+    // Calculate averages
+    int avt = (lt + rt) >> 1;
+    int avd = (ld + rd) >> 1;
 
-  int dvert = avt - avd, dhoriz = avl - avr;
+    // Calculate differences
+    int dvert = avt - avd;
+    int dhoriz = lt - rt + ld - rd;
 
-  const int tol = 200;
+    // Determine outdoor/indoor
+    int avgLight = (lt + rt + ld + rd) / 4;
+    int tol = (avgLight > lightThreshold) ? 50 : 200;
 
-  if (abs(dvert) > tol) {
-    servovert = constrain(servovert + (dvert > 0 ? 1 : -1), servovertLimitLow, servovertLimitHigh);
-    vertical.write(servovert);
+    // Adjust vertical servo
+    if (abs(dvert) > tol) {
+      if (dvert > 0 && servovert < servovertLimitHigh) servovert++;
+      else if (dvert < 0 && servovert > servovertLimitLow) servovert--;
+      vertical.write(servovert);
+    }
+
+    // Adjust horizontal servo
+    if (abs(dhoriz) > tol) {
+      if (dhoriz < 0 && servohori < servohoriLimitHigh) servohori++;
+      else if (dhoriz > 0 && servohori > servohoriLimitLow) servohori--;
+      horizontal.write(servohori);
+    }
   }
-
-  if (abs(dhoriz) > tol) {
-    servohori = constrain(servohori + (dhoriz < 0 ? 1 : -1), servohoriLimitLow, servohoriLimitHigh);
-    horizontal.write(servohori);
-  }
-
-  delay(10);
 }
