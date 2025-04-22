@@ -8,7 +8,7 @@
 
 bool sendDataEnabled = false;
 unsigned long lastSendTime = 0;
-unsigned long sendInterval = 30000; // Default: 30 seconds
+unsigned long sendInterval = 10000; // Default: 10 seconds
 
 // Button on/off control (V5)
 BLYNK_WRITE(V5) {
