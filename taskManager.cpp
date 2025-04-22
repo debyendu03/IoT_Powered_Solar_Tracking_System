@@ -10,7 +10,7 @@ TaskHandle_t TaskSendToBlynk;
 // Task 1: Light Tracking and Servo Control (Core 0)
 void LightAndServoTask(void* parameter) {
   for (;;) {
-    LightTrackingAndServoControl();
+    handleServoControl();
     vTaskDelay(1 / portTICK_PERIOD_MS); // minimal delay for smoother operation
   }
 }
