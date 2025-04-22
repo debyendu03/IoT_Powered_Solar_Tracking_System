@@ -12,8 +12,8 @@ const int servovertLimitHigh = 140, servovertLimitLow = 1;
 const int ldrlt = 35, ldrrt = 32, ldrld = 34, ldrrd = 33;
 
 // Current servo positions
-int servohori = 0;  // initial servo horizontal position 0
-int servovert = 180;  // initial servo vertical position 180
+int servohori = 180;  // initial servo horizontal position 180
+int servovert = 45;  // initial servo vertical position 45
 
 // Timing control
 unsigned long lastMoveTime = 0;
